@@ -1,5 +1,4 @@
-// controllers/userController.js
-// import userService from "../services/userServices.js";
+
 const userService = require("../services/userServices.js");
 const userController = {
   

@@ -1,19 +1,19 @@
+const ProductService = require("../services/productServices")
 const productController = {
   getAllProducts: async (req, res) => {
     try {
-      // Get all products logic
-      const products = [{productName:"Apple",Price:"180"}]; // Your product data
-      res.json(products);
+      const products = await ProductService.getAllProducts();
+      res.status(200).json(products);
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ message: error.message });
     }
   },
 
   getProductById: async (req, res) => {
     try {
-      // Get product by ID logic
-      const product = { id: req.params.id, name: 'Product Name' };
-      res.json(product);
+      const { id } = req.params;
+      const products = await ProductService.getProductById(id);
+      res.status(200).json(products);
     } catch (error) {
       res.status(404).json({ error: 'Product not found' });
     }
@@ -21,8 +21,8 @@ const productController = {
 
   createProduct: async (req, res) => {
     try {
-      // Create product logic
-      res.status(201).json({ message: 'Product created successfully' });
+      const product = await ProductService.createProduct(req.body)
+      res.status(201).json({ message: 'Product created successfully', data: product, });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -30,17 +30,30 @@ const productController = {
 
   updateProduct: async (req, res) => {
     try {
-      // Update product logic
-      res.json({ message: 'Product updated successfully' });
+      const { id } = req.params;
+      const updateData = req.body;
+
+      const updatedProduct = await ProductService.updateProduct(id, updateData);
+
+      if (!updatedProduct) {
+        return res.status(404).json({ error: 'Product not found' });
+      }
+
+      res.status(200).json({
+        message: 'Product updated successfully',
+        data: updatedProduct
+      });
     } catch (error) {
+      console.error('Error updating product:', error);
       res.status(500).json({ error: error.message });
     }
   },
 
+
   deleteProduct: async (req, res) => {
     try {
-      // Delete product logic
-      res.json({ message: 'Product deleted successfully' });
+      await ProductService.deleteProduct(req.params.id);
+      res.status(200).json({ message: 'Product deleted successfully' });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
