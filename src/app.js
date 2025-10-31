@@ -15,7 +15,7 @@ app.use(cors({ origin: '*', credentials: false }))
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/products', verifyToken, productRoutes);
-
+//check
 app.get('/health', (req, res) => {
     res.status(200).json({
         status: 'OK',
