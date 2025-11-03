@@ -9,6 +9,9 @@ const app = express()
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
+const variantRoutes = require('./routes/variantRoutes');
 const verifyToken = require('./middleware/authMiddleware');
 app.use(cors({ origin: '*', credentials: false }))
 
@@ -17,6 +20,10 @@ connectDB()
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/products', verifyToken, productRoutes);
+app.use('/api/v1/category', verifyToken, productRoutes);
+app.use('/api/v1/orders', verifyToken, orderRoutes);
+app.use('/api/v1/categories', verifyToken, categoryRoutes);
+app.use('/api/v1/variants', verifyToken,variantRoutes );
 
 
 
