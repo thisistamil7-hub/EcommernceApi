@@ -17,7 +17,10 @@ connectDB()
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/products', verifyToken, productRoutes);
-//check
+
+
+
+//checkd
 app.get('/health', (req, res) => {
     res.status(200).json({
         status: 'OK',
