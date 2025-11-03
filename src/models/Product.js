@@ -1,40 +1,49 @@
 const mongoose = require('mongoose');
 
 const ProductSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: [true, 'Please add a name'],
-        unique: true,
-        trim: true,
-        maxlength: [50, 'Name can not be more than 50 characters']
-    },
-    slug: String,
-    description: {
-        type: String,
-        required: [true, 'Please add a description'],
-        maxlength: [500, 'Description can not be more than 500 characters']
-    },
-    price: {
-        type: Number,
-        required: [true, 'Please add a price']
-    },
-    image: {
-        type: String,
-        default: 'no-photo.jpg'
-    },
-    category: {
-        type: String,
-        required: [true, 'Please add a category'],
-        enum: ['Electronics', 'Clothing', 'Books', 'Food', 'Other']
-    },
-    user: {
-        type: mongoose.Schema.ObjectId,
-        ref: 'User',
-        required: true
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    }
-},{ timestamps: true });
+  name: {
+    type: String,
+    required: [true, 'Please add a product name'],
+    trim: true,
+    maxlength: [100, 'Product name cannot exceed 100 characters']
+  },
+  slug: {
+    type: String,
+    unique: true
+  },
+  description: {
+    type: String,
+    required: [true, 'Please add a description']
+  },
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
+    required: true
+  },
+  brand: {
+    type: String
+  },
+  image: {
+    type: String,
+    default: 'no-photo.jpg'
+  },
+  basePrice: {
+    type: Number,
+    default: 0
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+}, { timestamps: true });
+
+// Automatically generate slug
+ProductSchema.pre('save', function (next) {
+  if (!this.slug) {
+    this.slug = this.name.toLowerCase().replace(/\s+/g, '-');
+  }
+  next();
+});
+
 module.exports = mongoose.model('Product', ProductSchema);
