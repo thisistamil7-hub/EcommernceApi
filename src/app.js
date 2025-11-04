@@ -6,7 +6,8 @@ const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/database');
 const swaggerUi = require('swagger-ui-express');
 // const swaggerDocument = require('./swagger.json');
-const swaggerSpec = require('./swagger');
+const swaggerSpec = require('./swagger-autogen');
+const swaggerDocument = require('./swagger-output.json');
 // import swaggerUi from "swagger-ui-express";
 // import swaggerSpec from "./swagger.js";
 
@@ -23,7 +24,8 @@ app.use(cors({ origin: '*', credentials: false }))
 
 app.use(express.json());
 connectDB()
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/products', verifyToken, productRoutes);
