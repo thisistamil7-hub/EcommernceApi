@@ -1,31 +1,44 @@
-const Order = require('../models/Order');
-const Variant = require('../models/Variant');
+const Order = require("../models/Order");
+const Variant = require("../models/Variant");
 
 exports.createOrder = async (orderData) => {
-    const { user, items } = orderData;
+  const { user, orderItems, shippingAddress, paymentMethod } = orderData;
 
-    let totalAmount = 0;
+  if (!orderItems || orderItems.length === 0) {
+    throw new Error("No items in the order");
+  }
 
-    for (const item of items) {
-        const variant = await Variant.findById(item.variant);
+  let totalAmount = 0;
 
-        if (!variant || variant.stock < item.quantity) {
-            throw new Error(`Insufficient stock for ${variant?.sku}`);
-        }
+  // Validate and update stock for each variant
+  await Promise.all(
+    orderItems.map(async (item) => {
+      const variant = await Variant.findById(item.variant);
 
-        totalAmount += variant.price * item.quantity;
+      if (!variant) {
+        throw new Error(`Variant not found for item: ${item.variant}`);
+      }
 
-        // Decrease stock
-        variant.stock -= item.quantity;
-        await variant.save();
-    }
+      if (variant.stock < item.quantity) {
+        throw new Error(`Insufficient stock for SKU: ${variant.sku}`);
+      }
 
-    // Create the order
-    const order = await Order.create({
-        user,
-        items,
-        totalAmount
-    });
+      totalAmount += variant.price * item.quantity;
 
-    return order;
+      // Decrease stock
+      variant.stock -= item.quantity;
+      await variant.save();
+    })
+  );
+
+  // Create order document
+  const order = await Order.create({
+    user,
+    orderItems,
+    shippingAddress,
+    paymentMethod,
+    totalAmount,
+  });
+
+  return order;
 };

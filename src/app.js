@@ -4,6 +4,12 @@ const fs = require('fs');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/database');
+const swaggerUi = require('swagger-ui-express');
+// const swaggerDocument = require('./swagger.json');
+const swaggerSpec = require('./swagger');
+// import swaggerUi from "swagger-ui-express";
+// import swaggerSpec from "./swagger.js";
+
 const config = require('./config/env');
 const app = express()
 const authRoutes = require('./routes/authRoutes');
@@ -11,19 +17,20 @@ const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
-const variantRoutes = require('./routes/variantRoutes');
+const variantRoutes = require('./routes/varientRoutes');
 const verifyToken = require('./middleware/authMiddleware');
 app.use(cors({ origin: '*', credentials: false }))
 
 app.use(express.json());
 connectDB()
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/products', verifyToken, productRoutes);
 app.use('/api/v1/category', verifyToken, productRoutes);
 app.use('/api/v1/orders', verifyToken, orderRoutes);
 app.use('/api/v1/categories', verifyToken, categoryRoutes);
-app.use('/api/v1/variants', verifyToken,variantRoutes );
+app.use('/api/v1/variants', verifyToken, variantRoutes);
 
 
 
