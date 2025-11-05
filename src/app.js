@@ -5,8 +5,7 @@ const path = require('path');
 const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/database');
 const swaggerUi = require('swagger-ui-express');
-// const swaggerDocument = require('./swagger.json');
-const swaggerSpec = require('./swagger-autogen');
+
 const swaggerDocument = require('./swagger-output.json');
 // import swaggerUi from "swagger-ui-express";
 // import swaggerSpec from "./swagger.js";
@@ -18,10 +17,9 @@ const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
-const variantRoutes = require('./routes/varientRoutes');
+const variantRoutes = require('./routes/variantRoutes');
 const verifyToken = require('./middleware/authMiddleware');
 app.use(cors({ origin: '*', credentials: false }))
-
 app.use(express.json());
 connectDB()
 // app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));

@@ -1,15 +1,45 @@
 {
   "swagger": "2.0",
   "info": {
-    "version": "1.0.0",
-    "title": "REST API",
-    "description": ""
+    "title": "E-Commerce API",
+    "description": "Auto-generated Swagger documentation",
+    "version": "1.0.0"
   },
-  "host": "localhost:3000",
+  "host": "localhost:5000",
   "basePath": "/",
+  "tags": [
+    {
+      "name": "Auth1",
+      "description": "Endpoints related to authentication"
+    },
+    {
+      "name": "Product",
+      "description": "Endpoints related to products"
+    },
+    {
+      "name": "Category",
+      "description": "Endpoints related to categories"
+    },
+    {
+      "name": "Order",
+      "description": "Endpoints related to orders"
+    },
+    {
+      "name": "Variant",
+      "description": "Endpoints related to product variants"
+    }
+  ],
   "schemes": [
     "http"
   ],
+  "securityDefinitions": {
+    "bearerAuth": {
+      "type": "apiKey",
+      "name": "authorization",
+      "in": "header",
+      "description": "Format: Bearer <token>"
+    }
+  },
   "paths": {
     "/health": {
       "get": {
@@ -23,7 +53,35 @@
     },
     "/api/v1/auth/register": {
       "post": {
-        "description": "",
+        "tags": [
+          "Auth1"
+        ],
+        "description": "Register user",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "User registration payload",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "John Doe"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "user@example.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "secret123"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
@@ -36,7 +94,31 @@
     },
     "/api/v1/auth/login": {
       "post": {
-        "description": "",
+        "tags": [
+          "Auth1"
+        ],
+        "description": "Login user",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Login credentials",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "user@example.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "secret123"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -49,12 +131,18 @@
     },
     "/api/v1/auth/logout": {
       "post": {
-        "description": "",
+        "tags": [
+          "Auth1"
+        ],
+        "description": "Logout user",
         "parameters": [
           {
             "name": "authorization",
             "in": "header",
-            "type": "string"
+            "description": "Bearer access token",
+            "required": true,
+            "type": "string",
+            "default": "Bearer <token>"
           }
         ],
         "responses": {
@@ -69,16 +157,21 @@
     },
     "/api/v1/auth/forgot-password": {
       "post": {
-        "description": "",
+        "tags": [
+          "Auth1"
+        ],
+        "description": "Send password reset link",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "email": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "user@example.com"
                 }
               }
             }
@@ -96,7 +189,10 @@
     },
     "/api/v1/auth/reset-password/{token}": {
       "post": {
-        "description": "",
+        "tags": [
+          "Auth1"
+        ],
+        "description": "Reset password using token",
         "parameters": [
           {
             "name": "token",
@@ -107,14 +203,13 @@
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "token": {
-                  "example": "any"
-                },
-                "newPassword": {
-                  "example": "any"
+                "password": {
+                  "type": "string",
+                  "example": "newStrongPassword123"
                 }
               }
             }
@@ -224,7 +319,10 @@
     },
     "/api/v1/products/": {
       "get": {
-        "description": "",
+        "tags": [
+          "Product"
+        ],
+        "description": "Get all products",
         "responses": {
           "200": {
             "description": "OK"
@@ -235,10 +333,28 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "post": {
-        "description": "",
+        "tags": [
+          "Product"
+        ],
+        "description": "Create a product",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProductCreate"
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
@@ -249,12 +365,20 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/api/v1/products/{id}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Product"
+        ],
+        "description": "Get product by ID",
         "parameters": [
           {
             "name": "id",
@@ -273,16 +397,32 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "put": {
-        "description": "",
+        "tags": [
+          "Product"
+        ],
+        "description": "Update a product by ID",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProductUpdate"
+            }
           }
         ],
         "responses": {
@@ -298,10 +438,18 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "Product"
+        ],
+        "description": "Delete a product by ID",
         "parameters": [
           {
             "name": "id",
@@ -320,12 +468,20 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/api/v1/category/": {
       "get": {
-        "description": "",
+        "tags": [
+          "Product"
+        ],
+        "description": "Get all products",
         "responses": {
           "200": {
             "description": "OK"
@@ -336,10 +492,28 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "post": {
-        "description": "",
+        "tags": [
+          "Product"
+        ],
+        "description": "Create a product",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProductCreate"
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
@@ -350,12 +524,20 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/api/v1/category/{id}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Product"
+        ],
+        "description": "Get product by ID",
         "parameters": [
           {
             "name": "id",
@@ -374,16 +556,32 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "put": {
-        "description": "",
+        "tags": [
+          "Product"
+        ],
+        "description": "Update a product by ID",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProductUpdate"
+            }
           }
         ],
         "responses": {
@@ -399,10 +597,18 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "Product"
+        ],
+        "description": "Delete a product by ID",
         "parameters": [
           {
             "name": "id",
@@ -421,12 +627,38 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/api/v1/orders/": {
       "post": {
-        "description": "",
+        "tags": [
+          "Order"
+        ],
+        "description": "Create a new order",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "Bearer access token",
+            "required": true,
+            "type": "string",
+            "default": "Bearer <token>"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/OrderCreate"
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
@@ -437,12 +669,30 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/api/v1/categories/": {
       "post": {
-        "description": "",
+        "tags": [
+          "Category"
+        ],
+        "description": "Create a category",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CategoryCreate"
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
@@ -453,12 +703,30 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/api/v1/variants/create": {
       "post": {
-        "description": "",
+        "tags": [
+          "Variant"
+        ],
+        "description": "Create a new product variant",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/VariantCreate"
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
@@ -469,12 +737,20 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/api/v1/variants/product/{productId}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Variant"
+        ],
+        "description": "Get variants by product ID",
         "parameters": [
           {
             "name": "productId",
@@ -492,6 +768,1054 @@
           },
           "401": {
             "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/register": {
+      "post": {
+        "tags": [
+          "Auth1"
+        ],
+        "description": "Register user",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "User registration payload",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "John Doe"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "user@example.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "secret123"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "Auth1"
+        ],
+        "description": "Login user",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Login credentials",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "user@example.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "secret123"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/logout": {
+      "post": {
+        "tags": [
+          "Auth1"
+        ],
+        "description": "Logout user",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "Bearer access token",
+            "required": true,
+            "type": "string",
+            "default": "Bearer <token>"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/forgot-password": {
+      "post": {
+        "tags": [
+          "Auth1"
+        ],
+        "description": "Send password reset link",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "user@example.com"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/reset-password/{token}": {
+      "post": {
+        "tags": [
+          "Auth1"
+        ],
+        "description": "Reset password using token",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "password": {
+                  "type": "string",
+                  "example": "newStrongPassword123"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "tags": [
+          "Product"
+        ],
+        "description": "Get all products",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Category"
+        ],
+        "description": "Create a category",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CategoryCreate"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/{id}": {
+      "get": {
+        "tags": [
+          "Product"
+        ],
+        "description": "Get product by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Product"
+        ],
+        "description": "Update a product by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProductUpdate"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Product"
+        ],
+        "description": "Delete a product by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/create": {
+      "post": {
+        "tags": [
+          "Variant"
+        ],
+        "description": "Create a new product variant",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/VariantCreate"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/product/{productId}": {
+      "get": {
+        "tags": [
+          "Variant"
+        ],
+        "description": "Get variants by product ID",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Product": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "example": "object"
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "slug": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "description": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "category": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Category ObjectId"
+                }
+              }
+            },
+            "brand": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "image": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "basePrice": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            },
+            "user": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "User ObjectId"
+                }
+              }
+            }
+          }
+        },
+        "example": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "example": "T-Shirt"
+            },
+            "slug": {
+              "type": "string",
+              "example": "t-shirt"
+            },
+            "description": {
+              "type": "string",
+              "example": "Comfortable cotton tee"
+            },
+            "category": {
+              "type": "string",
+              "example": "64f3c9b..."
+            },
+            "brand": {
+              "type": "string",
+              "example": "Acme"
+            },
+            "image": {
+              "type": "string",
+              "example": "no-photo.jpg"
+            },
+            "basePrice": {
+              "type": "number",
+              "example": 19.99
+            },
+            "user": {
+              "type": "string",
+              "example": "64f3c9b..."
+            }
+          }
+        }
+      }
+    },
+    "ProductCreate": {
+      "type": "object",
+      "properties": {
+        "allOf": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Product"
+          }
+        }
+      }
+    },
+    "ProductUpdate": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "example": "object"
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "description": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "category": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "brand": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "image": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "basePrice": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Category": {
+      "type": "object",
+      "properties": {
+        "properties": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "descriptiom": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "image": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            }
+          }
+        },
+        "example": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "example": "Clothing"
+            },
+            "descriptiom": {
+              "type": "string",
+              "example": "All clothing items"
+            },
+            "image": {
+              "type": "string",
+              "example": "no-photo.jpg"
+            }
+          }
+        }
+      }
+    },
+    "CategoryCreate": {
+      "type": "object",
+      "properties": {
+        "allOf": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Category"
+          }
+        }
+      }
+    },
+    "Variant": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "example": "object"
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "productId": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Product ObjectId"
+                }
+              }
+            },
+            "sku": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "color": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "size": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "material": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "image": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "price": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            },
+            "stock": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "integer"
+                }
+              }
+            },
+            "isActive": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "example": {
+          "type": "object",
+          "properties": {
+            "productId": {
+              "type": "string",
+              "example": "64f3c9b..."
+            },
+            "sku": {
+              "type": "string",
+              "example": "TSHIRT-BLK-M"
+            },
+            "color": {
+              "type": "string",
+              "example": "Black"
+            },
+            "size": {
+              "type": "string",
+              "example": "M"
+            },
+            "material": {
+              "type": "string",
+              "example": "Cotton"
+            },
+            "image": {
+              "type": "string",
+              "example": "image.jpg"
+            },
+            "price": {
+              "type": "number",
+              "example": 22.5
+            },
+            "stock": {
+              "type": "number",
+              "example": 100
+            },
+            "isActive": {
+              "type": "boolean",
+              "example": true
+            }
+          }
+        }
+      }
+    },
+    "VariantCreate": {
+      "type": "object",
+      "properties": {
+        "allOf": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Variant"
+          }
+        }
+      }
+    },
+    "OrderItem": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "example": "object"
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "product": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "variant": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "quantity": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "integer"
+                }
+              }
+            },
+            "price": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            }
+          }
+        },
+        "required": {
+          "type": "array",
+          "example": [
+            "product",
+            "quantity",
+            "price"
+          ],
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "OrderCreate": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "example": "object"
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "orderItems": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "$ref": "#/definitions/OrderItem"
+                }
+              }
+            },
+            "shippingAddress": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "object"
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "street": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        }
+                      }
+                    },
+                    "city": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        }
+                      }
+                    },
+                    "state": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        }
+                      }
+                    },
+                    "postalCode": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        }
+                      }
+                    },
+                    "country": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "paymentMethod": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "enum": {
+                  "type": "array",
+                  "example": [
+                    "card",
+                    "upi",
+                    "cod"
+                  ],
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "totalAmount": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            }
+          }
+        },
+        "example": {
+          "type": "object",
+          "properties": {
+            "orderItems": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "product": {
+                    "type": "string",
+                    "example": "64f3c9b..."
+                  },
+                  "variant": {
+                    "type": "string",
+                    "example": "64f3c9b..."
+                  },
+                  "quantity": {
+                    "type": "number",
+                    "example": 2
+                  },
+                  "price": {
+                    "type": "number",
+                    "example": 19.99
+                  }
+                }
+              }
+            },
+            "shippingAddress": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string",
+                  "example": "123 Main St"
+                },
+                "city": {
+                  "type": "string",
+                  "example": "City"
+                },
+                "state": {
+                  "type": "string",
+                  "example": "State"
+                },
+                "postalCode": {
+                  "type": "string",
+                  "example": "12345"
+                },
+                "country": {
+                  "type": "string",
+                  "example": "Country"
+                }
+              }
+            },
+            "paymentMethod": {
+              "type": "string",
+              "example": "cod"
+            },
+            "totalAmount": {
+              "type": "number",
+              "example": 59.97
+            }
           }
         }
       }
