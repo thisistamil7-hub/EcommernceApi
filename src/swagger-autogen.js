@@ -6,7 +6,7 @@ const doc = {
     title: 'E-Commerce API',
     description: 'Auto-generated Swagger documentation',
   },
-  host: 'ecommernceapi-ctz4.onrender.com/',
+  host: 'ecommernceapi-ctz4.onrender.com',
   schemes: ['https'],
   securityDefinitions: {
     bearerAuth: {
