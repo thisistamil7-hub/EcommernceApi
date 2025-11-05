@@ -5,7 +5,7 @@
     "description": "Auto-generated Swagger documentation",
     "version": "1.0.0"
   },
-  "host": "ecommernceapi-ctz4.onrender.com/",
+  "host": "ecommernceapi-ctz4.onrender.com",
   "basePath": "/",
   "tags": [
     {
