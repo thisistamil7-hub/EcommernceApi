@@ -1,34 +1,68 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
-const OrderSchema = new mongoose.Schema({
+const OrderSchema = new mongoose.Schema(
+  {
+    // Customer / User info
     user: {
-        type: mongoose.Schema.ObjectId,
-        ref: "User",
-        required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Customer", // reference to your customers table
+      required: true,
     },
+
+    // Order details
     orderItems: [
-        {
-            product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
-            variant: { type: mongoose.Schema.Types.ObjectId, ref: "Variant" }, // ✅ optional
-            quantity: { type: Number, required: true },
-            price: { type: Number, required: true },
-        },
+      {
+        product: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
+        variant: { type: mongoose.Schema.Types.ObjectId, ref: "Variant" }, // optional
+        quantity: { type: Number, required: true },
+        price: { type: Number, required: true },
+      },
     ],
-    shippingAddress: {
-        street: String,
-        city: String,
-        state: String,
-        postalCode: String,
-        country: String,
-    },
-    paymentMethod: { type: String, enum: ["card", "upi", "cod"], default: "cod" },
-    paymentStatus: { type: String, enum: ["pending", "success", "failed"], default: "pending" },
+
+    // Billing & payment
     totalAmount: { type: Number, required: true },
+    advanceAmount: { type: Number, default: 0 },
+    remainingAmount: { type: Number, default: 0 }, // calculated = total - advance
+    paymentMethod: {
+      type: String,
+      enum: ["cash", "card", "upi", "cod"],
+      default: "cash",
+    },
+    paymentStatus: {
+      type: String,
+      enum: ["pending", "partial", "success", "failed"],
+      default: "pending",
+    },
+
+    // Address / Delivery
+    shippingAddress: {
+      street: String,
+      city: String,
+      state: String,
+      postalCode: String,
+      country: String,
+    },
+
+    // Status tracking
     status: {
-        type: String,
-        enum: ["pending", "processing", "shipped", "delivered", "cancelled"],
-        default: "pending",
+      type: String,
+      enum: ["pending", "processing", "shipped", "delivered", "cancelled"],
+      default: "pending",
     },
     deliveredAt: Date,
-}, { timestamps: true });
-module.exports = mongoose.model("Order", OrderSchema)
+
+    // Optional for reporting/invoice
+    invoiceNo: { type: String },
+    notes: { type: String },
+
+  },
+  { timestamps: true }
+);
+
+// 🧮 Auto-calculate remaining amount before saving
+OrderSchema.pre("save", function (next) {
+  this.remainingAmount = this.totalAmount - this.advanceAmount;
+  next();
+});
+
+module.exports = mongoose.model("Order", OrderSchema);

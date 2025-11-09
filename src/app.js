@@ -19,6 +19,7 @@ const orderRoutes = require('./routes/orderRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const variantRoutes = require('./routes/variantRoutes');
 const verifyToken = require('./middleware/authMiddleware');
+const customerRoutes =require('./routes/customerRoutes')
 app.use(cors({ origin: '*', credentials: false }))
 app.use(express.json());
 connectDB()
@@ -27,10 +28,11 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/products', verifyToken, productRoutes);
-app.use('/api/v1/category', verifyToken, productRoutes);
 app.use('/api/v1/orders', verifyToken, orderRoutes);
 app.use('/api/v1/categories', verifyToken, categoryRoutes);
 app.use('/api/v1/variants', verifyToken, variantRoutes);
+app.use('/api/v1/customers',verifyToken, customerRoutes);
+
 
 
 
